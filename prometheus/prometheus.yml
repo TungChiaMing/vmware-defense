@@ -1,0 +1,18 @@
+global:
+  scrape_interval: 30s
+  evaluation_interval: 30s
+
+scrape_configs:
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+
+  - job_name: 'vmware_vcenter'
+    scrape_interval: 60s
+    scrape_timeout: 50s
+    metrics_path: '/metrics'
+    params:
+      vsphere_host: ['vcsim']
+    static_configs:
+      - targets:
+          - 'vmware_exporter:9272'

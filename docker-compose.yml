@@ -1,0 +1,62 @@
+services:
+  vcsim:
+    image: vmware/vcsim
+    container_name: vcsim
+    command: ["-l", "0.0.0.0:443"]
+    ports:
+      - "8989:443"
+    networks:
+      - monitoring
+
+  vmware_exporter:
+    image: pryorda/vmware_exporter:v0.18.4
+    container_name: vmware_exporter
+    ports:
+      - "9272:9272"
+    environment:
+      VSPHERE_HOST: vcsim
+      VSPHERE_USER: user
+      VSPHERE_PASSWORD: pass
+      VSPHERE_IGNORE_SSL: "TRUE"
+      VSPHERE_SPECS_SIZE: "5000"
+    depends_on:
+      - vcsim
+    networks:
+      - monitoring
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus_data:/prometheus
+    networks:
+      - monitoring
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: admin
+      GF_USERS_ALLOW_SIGN_UP: "false"
+    volumes:
+      - ./grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./grafana/dashboards:/var/lib/grafana/dashboards:ro
+      - grafana_data:/var/lib/grafana
+    depends_on:
+      - prometheus
+    networks:
+      - monitoring
+
+networks:
+  monitoring:
+    driver: bridge
+
+volumes:
+  prometheus_data:
+  grafana_data:
