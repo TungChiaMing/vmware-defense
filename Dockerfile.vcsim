@@ -1,0 +1,7 @@
+FROM vmware/vcsim
+
+# vcsim's default listen is 127.0.0.1:8989 (loopback only).
+# Override to listen on 0.0.0.0:443 so other services in the same project
+# can connect to it on the standard vSphere SDK port.
+EXPOSE 443
+CMD ["-l", "0.0.0.0:443"]

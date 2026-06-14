@@ -1,0 +1,14 @@
+FROM pryorda/vmware_exporter:v0.18.4
+
+# This image needs the following environment variables to run.
+# Set them at deploy time (Zeabur → Service → Variables, or `-e` for plain
+# `docker run`, or via docker-compose `environment:`). Do NOT bake them
+# into the image — they're per-environment config, not image identity.
+#
+#   VSPHERE_HOST        target vCenter host (e.g. vcsim, vcenter.corp.com)
+#   VSPHERE_USER        monitoring account username
+#   VSPHERE_PASSWORD    monitoring account password
+#   VSPHERE_IGNORE_SSL  TRUE for vcsim or self-signed; FALSE for valid cert
+#   VSPHERE_SPECS_SIZE  optional, default 5000
+
+EXPOSE 9272
