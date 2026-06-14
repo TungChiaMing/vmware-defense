@@ -1,0 +1,4 @@
+FROM grafana/grafana:latest
+
+COPY --chown=grafana:root grafana/provisioning/ /etc/grafana/provisioning/
+COPY --chown=grafana:root grafana/dashboards/   /var/lib/grafana/dashboards/
